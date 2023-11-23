@@ -8,6 +8,7 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 nltk.download("punkt")
 nltk.download('stopwords')
