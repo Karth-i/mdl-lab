@@ -38,38 +38,4 @@ def transform_text(text):
 
     return " ".join(y)
 
-# Load the pre-trained model and vectorizer
-tfidf = pickle.load(open('vectorizer.pkl', 'rb'))
-model = pickle.load(open('model.pkl', 'rb'))
-
-# Create an ML pipeline
-pipeline = Pipeline([
-    ('tfidf', tfidf),
-    ('classifier', model)
-])
-
-st.title("Email/SMS Spam Classifier")
-
-input_sms = st.text_area("Enter the message")
-
-if st.button('Predict'):
-    # Use the ML pipeline to preprocess, vectorize, and predict
-    result = pipeline.predict([input_sms])[0]
-
-    # Display the result
-    if result == 1:
-        st.header("Spam")
-    else:
-        st.header("Not Spam")
-
-    # Data for visualization
-    predictions = pipeline.predict([" ".join(ps.stem(word.lower()) for word in nltk.word_tokenize(message)) for message in st.text_input("Enter multiple messages separated by commas").split(",")])
-    values, counts = np.unique(predictions, return_counts=True)
-
-    # Bar chart
-    fig, ax = plt.subplots()
-    ax.bar(['Not Spam', 'Spam'], counts, color=['blue', 'red'])
-    ax.set_ylabel('Count')
-    ax.set_title('Distribution of Predictions')
-
-    st.pyplot(fig)
+# Load the pre-trained model and vec
