@@ -66,9 +66,10 @@ if st.button('Predict'):
     predictions = pipeline.predict([" ".join(ps.stem(word.lower()) for word in nltk.word_tokenize(message)) for message in st.text_input("Enter multiple messages separated by commas").split(",")])
     values, counts = np.unique(predictions, return_counts=True)
 
-    # Pie chart
+    # Bar chart
     fig, ax = plt.subplots()
-    ax.pie(counts, labels=['Not Spam', 'Spam'], colors=['blue', 'red'], autopct='%1.1f%%', startangle=90)
-    ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+    ax.bar(['Not Spam', 'Spam'], counts, color=['blue', 'red'])
+    ax.set_ylabel('Count')
+    ax.set_title('Distribution of Predictions')
 
     st.pyplot(fig)
