@@ -63,11 +63,14 @@ if st.button('Predict'):
         st.header("Not Spam")
 
     # Data for visualization
-    #messages = st.text_input("Enter multiple messages separated by commas")
-    #predictions = pipeline.predict([" ".join(ps.stem(word.lower()) for word in nltk.word_tokenize(message)) for message in messages.split(",")])
+    messages = st.text_input("Enter multiple messages separated by commas")
+    predictions = pipeline.predict([" ".join(ps.stem(word.lower()) for word in nltk.word_tokenize(message)) for message in messages.split(",")])
+
+    # Store predicted values separately
+    predicted_values = pd.Series(predictions)
 
     # Count occurrences using Pandas
-    counts_df = pd.Series(predictions).value_counts()
+    counts_df = predicted_values.value_counts()
 
     # Bar chart
     fig, ax = plt.subplots()
