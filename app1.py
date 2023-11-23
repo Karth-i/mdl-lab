@@ -57,30 +57,4 @@ st.title("Email/SMS Spam Classifier")
 input_sms = st.text_area("Enter the message")
 
 if st.button('Predict'):
-    # Fit the vectorizer with a placeholder message
-    tfidf.fit(['example message'])
-
-    # Transform the input message using the fitted vectorizer
-    input_sms_transformed = tfidf.transform([input_sms])
-
-    # Fit the SVM on some data (you should use your training data)
-    # Here, we use a placeholder DataFrame for demonstration purposes
-    placeholder_data = pd.DataFrame({'message': ['example message'], 'label': [0]})
-    svm_model.fit(input_sms_transformed, placeholder_data['label'])
-
-    # Use the ML pipeline to predict
-    result = pipeline.predict([input_sms])[0]
-
-    # Display the result
-    if result == 1:
-        st.header("Spam")
-    else:
-        st.header("Not Spam")
-
-    # Bar chart
-    fig, ax = plt.subplots()
-    ax.bar(['Not Spam', 'Spam'], [1 - result, result], color=['blue', 'red'])
-    ax.set_ylabel('Count')
-    ax.set_title('Distribution of Predictions')
-
-    st.pyplot(fig)
+    # Fit the vectorizer with a placeholder m
