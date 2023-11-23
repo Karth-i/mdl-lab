@@ -74,7 +74,7 @@ if uploaded_file is not None:
             st.header("Not Spam")
 
         # Check if 'message' column is in the DataFrame
-        if 'message' in df.columns:
+        if 'v2' in df.columns:
             # Data for visualization
             predictions = pipeline.predict([transform_text(message) for message in df['v2']])
             values, counts = np.unique(predictions, return_counts=True)
