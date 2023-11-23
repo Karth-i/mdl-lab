@@ -50,6 +50,9 @@ pipeline = Pipeline([
 
 st.title("Email/SMS Spam Classifier")
 
+# List to store results for each prediction
+results = []
+
 input_sms = st.text_area("Enter the message")
 
 if st.button('Predict'):
@@ -72,4 +75,12 @@ if st.button('Predict'):
     ax.set_ylabel('Count')
     ax.set_title('Distribution of Predictions')
 
+    # Append the results to the list
+    results.append(result)
+
     st.pyplot(fig)
+
+# Display cumulative results
+if results:
+    st.subheader("Cumulative Results:")
+    st.bar_chart(np.array([results]), width=600, height=400)
