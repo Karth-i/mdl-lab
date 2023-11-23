@@ -57,12 +57,19 @@ st.title("Email/SMS Spam Classifier")
 input_sms = st.text_area("Enter the message")
 
 if st.button('Predict'):
-    # Fit the pipeline (including hyperparameter tuning) on some data (you should use your training data)
+    # Fit the vectorizer on some data (you should use your training data)
     # Here, we use a placeholder DataFrame for demonstration purposes
     placeholder_data = pd.DataFrame({'message': ['example message'], 'label': [0]})
-    pipeline.fit(placeholder_data['message'], placeholder_data['label'])
+    tfidf.fit(placeholder_data['message'])
 
-    # Use the ML pipeline to preprocess, vectorize, and predict
+    # Transform the input message using the fitted vectorizer
+    input_sms_transformed = tfidf.transform([input_sms])
+
+    # Fit the SVM on some data (you should use your training data)
+    # Here, we use a placeholder DataFrame for demonstration purposes
+    svm_model.fit(input_sms_transformed, placeholder_data['label'])
+
+    # Use the ML pipeline to predict
     result = pipeline.predict([input_sms])[0]
 
     # Display the result
