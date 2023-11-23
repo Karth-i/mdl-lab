@@ -8,7 +8,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline
 import matplotlib.pyplot as plt
-import numpy as np
+import pandas as pd
 
 nltk.download("punkt")
 nltk.download('stopwords')
@@ -63,12 +63,15 @@ if st.button('Predict'):
         st.header("Not Spam")
 
     # Data for visualization
-    predictions = pipeline.predict([" ".join(ps.stem(word.lower()) for word in nltk.word_tokenize(message)) for message in st.text_input("Enter multiple messages separated by commas").split(",")])
-    values, counts = np.unique(predictions, return_counts=True)
+    #messages = st.text_input("Enter multiple messages separated by commas")
+    #predictions = pipeline.predict([" ".join(ps.stem(word.lower()) for word in nltk.word_tokenize(message)) for message in messages.split(",")])
+
+    # Count occurrences using Pandas
+    counts_df = pd.Series(predictions).value_counts()
 
     # Bar chart
     fig, ax = plt.subplots()
-    ax.bar(['Not Spam', 'Spam'], counts, color=['blue', 'red'])
+    ax.bar(counts_df.index, counts_df.values, color=['blue', 'red'])
     ax.set_ylabel('Count')
     ax.set_title('Distribution of Predictions')
 
