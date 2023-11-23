@@ -48,13 +48,15 @@ pipeline = Pipeline([
     ('classifier', model)
 ])
 
+# Initialize session state
+if 'spam_count' not in st.session_state:
+    st.session_state.spam_count = 0
+if 'not_spam_count' not in st.session_state:
+    st.session_state.not_spam_count = 0
+
 st.title("Email/SMS Spam Classifier")
 
 input_sms = st.text_area("Enter the message")
-
-# Initialize counts
-spam_count = 0
-not_spam_count = 0
 
 if st.button('Predict'):
     # Use the ML pipeline to preprocess, vectorize, and predict
@@ -63,14 +65,14 @@ if st.button('Predict'):
     # Display the result
     if result == 1:
         st.header("Spam")
-        spam_count += 1
+        st.session_state.spam_count += 1
     else:
         st.header("Not Spam")
-        not_spam_count += 1
+        st.session_state.not_spam_count += 1
 
     # Bar chart
     fig, ax = plt.subplots()
-    ax.bar(['Not Spam', 'Spam'], [not_spam_count, spam_count], color=['blue', 'red'])
+    ax.bar(['Not Spam', 'Spam'], [st.session_state.not_spam_count, st.session_state.spam_count], color=['blue', 'red'])
     ax.set_ylabel('Count')
     ax.set_title('Distribution of Predictions')
 
