@@ -6,7 +6,7 @@ import nltk
 from nltk.stem.porter import PorterStemmer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.svm import SVC
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import LeaveOneOut
 from sklearn.pipeline import Pipeline
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -42,15 +42,21 @@ def transform_text(text):
 # Create an empty TfidfVectorizer
 tfidf = TfidfVectorizer()
 
-# Use linear SVM with hyperparameter tuning
+# Use linear SVM with hyperparameter tuning and Leave-One-Out cross-validation
 param_grid = {'classifier__C': [0.1, 1, 10, 100]}
-svm_model = GridSearchCV(SVC(kernel='linear'), param_grid, cv=2, scoring='accuracy', n_jobs=-1)
+svm_model = SVC(kernel='linear')
 
 # Create an ML pipeline
 pipeline = Pipeline([
     ('tfidf', tfidf),
     ('classifier', svm_model)
 ])
+
+# Initialize session state
+if 'spam_count' not in st.session_state:
+    st.session_state.spam_count = 0
+if 'not_spam_count' not in st.session_state:
+    st.session_state.not_spam_count = 0
 
 st.title("Email/SMS Spam Classifier")
 
@@ -66,21 +72,35 @@ if st.button('Predict'):
     # Fit the SVM on some data (you should use your training data)
     # Here, we use a placeholder DataFrame for demonstration purposes
     placeholder_data = pd.DataFrame({'message': ['example message'], 'label': [0]})
-    # Use the transformed data for fitting the SVM
-    svm_model.fit(input_sms_transformed, placeholder_data['label'])
+
+    # Use Leave-One-Out cross-validation for training
+    loo = LeaveOneOut()
+    predictions = []
+    for train_index, test_index in loo.split(placeholder_data):
+        X_train, X_test = input_sms_transformed[train_index], input_sms_transformed[test_index]
+        y_train, y_test = placeholder_data['label'].iloc[train_index], placeholder_data['label'].iloc[test_index]
+
+        # Fit the SVM model
+        svm_model.fit(X_train, y_train)
+
+        # Predict on the test sample
+        result = svm_model.predict(X_test)[0]
+        predictions.append(result)
 
     # Use the ML pipeline to predict
-    result = pipeline.predict([input_sms])[0]
+    result = predictions[0]
 
     # Display the result
     if result == 1:
         st.header("Spam")
+        st.session_state.spam_count += 1
     else:
         st.header("Not Spam")
+        st.session_state.not_spam_count += 1
 
     # Bar chart
     fig, ax = plt.subplots()
-    ax.bar(['Not Spam', 'Spam'], [1 - result, result], color=['blue', 'red'])
+    ax.bar(['Not Spam', 'Spam'], [st.session_state.not_spam_count, st.session_state.spam_count], color=['blue', 'red'])
     ax.set_ylabel('Count')
     ax.set_title('Distribution of Predictions')
 
