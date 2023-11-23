@@ -44,7 +44,7 @@ tfidf = TfidfVectorizer()
 
 # Use linear SVM with hyperparameter tuning
 param_grid = {'classifier__C': [0.1, 1, 10, 100]}
-svm_model = GridSearchCV(SVC(kernel='linear'), param_grid, cv=3, scoring='accuracy', n_jobs=-1)
+svm_model = GridSearchCV(SVC(kernel='linear'), param_grid, cv=2, scoring='accuracy', n_jobs=-1)
 
 # Create an ML pipeline
 pipeline = Pipeline([
