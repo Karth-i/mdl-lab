@@ -5,7 +5,7 @@ from nltk.corpus import stopwords
 import nltk
 from nltk.stem.porter import PorterStemmer
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.svm import SVC  # Import Linear SVM classifier
+from sklearn.svm import SVC  
 from sklearn.pipeline import Pipeline
 import matplotlib.pyplot as plt
 import pandas as pd
