@@ -57,6 +57,9 @@ if uploaded_file is not None:
     # Read the uploaded dataset
     df = pd.read_csv(uploaded_file)
 
+    # Print column names
+    st.write("Column Names:", df.columns.tolist())
+
     # Assuming the dataset has a column 'message' for text input
     input_sms = st.text_area("Enter the message")
 
@@ -70,14 +73,18 @@ if uploaded_file is not None:
         else:
             st.header("Not Spam")
 
-        # Data for visualization
-        predictions = pipeline.predict([transform_text(message) for message in df['message']])
-        values, counts = np.unique(predictions, return_counts=True)
+        # Check if 'message' column is in the DataFrame
+        if 'message' in df.columns:
+            # Data for visualization
+            predictions = pipeline.predict([transform_text(message) for message in df['message']])
+            values, counts = np.unique(predictions, return_counts=True)
 
-        # Bar chart
-        fig, ax = plt.subplots()
-        ax.bar(['Not Spam', 'Spam'], counts, color=['blue', 'red'])
-        ax.set_ylabel('Count')
-        ax.set_title('Distribution of Predictions')
+            # Bar chart
+            fig, ax = plt.subplots()
+            ax.bar(['Not Spam', 'Spam'], counts, color=['blue', 'red'])
+            ax.set_ylabel('Count')
+            ax.set_title('Distribution of Predictions')
 
-        st.pyplot(fig)
+            st.pyplot(fig)
+        else:
+            st.warning("The 'message' column is not found in the uploaded dataset.")
