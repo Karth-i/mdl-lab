@@ -11,15 +11,11 @@ from nltk.stem.porter import PorterStemmer
 nltk.download("punkt")
 nltk.download('stopwords')
 
-# Load your dataset or provide your own data
-# Replace this with your dataset loading code
-# Assuming you have a DataFrame with 'text' and 'label' columns
-# Example:
-# data = pd.read_csv('your_dataset.csv')
-# X = data['text']
-# y = data['label']
 
-# For demonstration purposes, let's use some dummy data
+data = pd.read_csv('spam.csv')
+X = data['v2']
+y = data[v1"]
+
 X = ["This is a positive example", "This is a negative example", "Another positive example"]
 y = [1, 0, 1]  # Binary labels (1 for positive, 0 for negative)
 
@@ -35,7 +31,7 @@ def preprocess_text(text):
 X_preprocessed = [preprocess_text(text) for text in X]
 
 # Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X_preprocessed, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X_preprocessed, y, test_size=0.1, random_state=42)
 
 # Create a TF-IDF vectorizer
 vectorizer = TfidfVectorizer()
