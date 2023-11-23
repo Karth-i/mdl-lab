@@ -43,7 +43,7 @@ def transform_text(text):
 tfidf = pickle.load(open('vectorizer.pkl', 'rb'))
 
 # Use linear SVM with hyperparameter tuning
-param_grid = {'classifier__C': [0.1, 1, 10, 100]}
+param_grid = {'C': [0.1, 1, 10, 100]}
 svm_model = GridSearchCV(SVC(kernel='linear'), param_grid, cv=3, scoring='accuracy', n_jobs=-1)
 
 # Create an ML pipeline
@@ -57,6 +57,11 @@ st.title("Email/SMS Spam Classifier")
 input_sms = st.text_area("Enter the message")
 
 if st.button('Predict'):
+    # Fit the pipeline (including hyperparameter tuning) on some data (you should use your training data)
+    # Here, we use a placeholder DataFrame for demonstration purposes
+    placeholder_data = pd.DataFrame({'message': ['example message'], 'label': [0]})
+    pipeline.fit(placeholder_data['message'], placeholder_data['label'])
+
     # Use the ML pipeline to preprocess, vectorize, and predict
     result = pipeline.predict([input_sms])[0]
 
