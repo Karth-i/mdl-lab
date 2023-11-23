@@ -62,3 +62,16 @@ if st.button('Predict'):
 
     # Display the result
     if result == 1:
+        st.header("Spam")
+        spam_count += 1
+    else:
+        st.header("Not Spam")
+        not_spam_count += 1
+
+    # Bar chart
+    fig, ax = plt.subplots()
+    ax.bar(['Not Spam', 'Spam'], [not_spam_count, spam_count], color=['blue', 'red'])
+    ax.set_ylabel('Count')
+    ax.set_title('Distribution of Predictions')
+
+    st.pyplot(fig)
