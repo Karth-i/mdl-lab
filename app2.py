@@ -76,7 +76,7 @@ if uploaded_file is not None:
         # Check if 'message' column is in the DataFrame
         if 'message' in df.columns:
             # Data for visualization
-            predictions = pipeline.predict([transform_text(message) for message in df['message']])
+            predictions = pipeline.predict([transform_text(message) for message in df['v2']])
             values, counts = np.unique(predictions, return_counts=True)
 
             # Bar chart
