@@ -1,13 +1,12 @@
 import streamlit as st
 import pickle
 import string
-import nltk
 from nltk.corpus import stopwords
+import nltk
 from nltk.stem.porter import PorterStemmer
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.svm import SVC
+from sklearn.svm import SVC  # Import Linear SVM classifier
 from sklearn.pipeline import Pipeline
-from sklearn.model_selection import GridSearchCV
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -43,10 +42,10 @@ def transform_text(text):
 tfidf = pickle.load(open('vectorizer.pkl', 'rb'))
 model = pickle.load(open('model.pkl', 'rb'))
 
-# Create an ML pipeline
+# Create an ML pipeline with Linear SVM classifier
 pipeline = Pipeline([
     ('tfidf', tfidf),
-    ('classifier', model)
+    ('classifier', SVC(kernel='linear'))  # Use Linear SVM classifier
 ])
 
 # Initialize session state
@@ -78,32 +77,3 @@ if st.button('Predict'):
     ax.set_title('Distribution of Predictions')
 
     st.pyplot(fig)
-# Define the SVM model
-svm_model = SVC()
-
-# Define the parameter grid for grid search
-param_grid = {'classifier__C': [0.1, 1, 10, 100], 'classifier__kernel': ['linear']}
-
-# Create a pipeline with TfidfVectorizer and SVM
-svm_pipeline = Pipeline([
-    ('tfidf', tfidf),
-    ('classifier', svm_model)
-])
-
-# Perform grid search
-grid_search = GridSearchCV(svm_pipeline, param_grid, cv=5, scoring='accuracy')
-grid_search.fit(X_train, y_train)
-
-# Get the best parameters from the grid search
-best_params = grid_search.best_params_
-
-# Train the final SVM model with the best parameters
-final_svm_model = SVC(**best_params)
-final_pipeline = Pipeline([
-    ('tfidf', tfidf),
-    ('classifier', final_svm_model)
-])
-final_pipeline.fit(X_train, y_train)
-
-# Save the final SVM model
-pickle.dump(final_pipeline, open('svm_model.pkl', 'wb'))
