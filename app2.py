@@ -2,6 +2,7 @@ import streamlit as st
 import pickle
 import string
 import nltk
+from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
@@ -62,7 +63,7 @@ if uploaded_file is not None:
 
     if st.button('Predict'):
         # Use the ML pipeline to preprocess, vectorize, and predict
-        result = pipeline.predict([input_sms])[0]
+        result = pipeline.predict([transform_text(input_sms)])[0]
 
         # Display the result
         if result == 1:
@@ -71,7 +72,7 @@ if uploaded_file is not None:
             st.header("Not Spam")
 
         # Data for visualization
-        predictions = pipeline.predict([" ".join(ps.stem(word.lower()) for word in nltk.word_tokenize(message)) for message in df['message']])
+        predictions = pipeline.predict([transform_text(message) for message in df['message']])
         values, counts = np.unique(predictions, return_counts=True)
 
         # Bar chart
