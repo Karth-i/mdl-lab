@@ -1,13 +1,13 @@
 import streamlit as st
 import pickle
 import string
-from nltk.corpus import stopwords
 import nltk
+from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.svm import SVC
-from sklearn.model_selection import LeaveOneOut
 from sklearn.pipeline import Pipeline
+from sklearn.model_selection import GridSearchCV
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -39,17 +39,14 @@ def transform_text(text):
 
     return " ".join(y)
 
-# Create an empty TfidfVectorizer
-tfidf = TfidfVectorizer()
-
-# Use linear SVM with hyperparameter tuning and Leave-One-Out cross-validation
-param_grid = {'classifier__C': [0.1, 1, 10, 100]}
-svm_model = SVC(kernel='linear')
+# Load the pre-trained model and vectorizer
+tfidf = pickle.load(open('vectorizer.pkl', 'rb'))
+model = pickle.load(open('model.pkl', 'rb'))
 
 # Create an ML pipeline
 pipeline = Pipeline([
     ('tfidf', tfidf),
-    ('classifier', svm_model)
+    ('classifier', model)
 ])
 
 # Initialize session state
@@ -63,34 +60,8 @@ st.title("Email/SMS Spam Classifier")
 input_sms = st.text_area("Enter the message")
 
 if st.button('Predict'):
-    # Fit the vectorizer with placeholder messages
-    tfidf.fit(['example message 1', 'example message 2'])
-
-    # Transform the input message using the fitted vectorizer
-    input_sms_transformed = tfidf.transform([input_sms])
-
-    # Fit the SVM model on the placeholder dataset
-    placeholder_data = pd.DataFrame({
-        'message': ['example message 1', 'example message 2'],
-        'label': [0, 1]
-    })
-
-    # Use Leave-One-Out cross-validation for training
-    loo = LeaveOneOut()
-    predictions = []
-    for train_index, test_index in loo.split(placeholder_data):
-        X_train, X_test = input_sms_transformed[train_index], input_sms_transformed[test_index]
-        y_train, y_test = placeholder_data['label'].iloc[train_index], placeholder_data['label'].iloc[test_index]
-
-        # Fit the SVM model
-        svm_model.fit(X_train, y_train)
-
-        # Predict on the test sample
-        result = svm_model.predict(X_test)[0]
-        predictions.append(result)
-
-    # Use the ML pipeline to predict
-    result = predictions[0]
+    # Use the ML pipeline to preprocess, vectorize, and predict
+    result = pipeline.predict([input_sms])[0]
 
     # Display the result
     if result == 1:
@@ -107,3 +78,32 @@ if st.button('Predict'):
     ax.set_title('Distribution of Predictions')
 
     st.pyplot(fig)
+# Define the SVM model
+svm_model = SVC()
+
+# Define the parameter grid for grid search
+param_grid = {'classifier__C': [0.1, 1, 10, 100], 'classifier__kernel': ['linear']}
+
+# Create a pipeline with TfidfVectorizer and SVM
+svm_pipeline = Pipeline([
+    ('tfidf', tfidf),
+    ('classifier', svm_model)
+])
+
+# Perform grid search
+grid_search = GridSearchCV(svm_pipeline, param_grid, cv=5, scoring='accuracy')
+grid_search.fit(X_train, y_train)
+
+# Get the best parameters from the grid search
+best_params = grid_search.best_params_
+
+# Train the final SVM model with the best parameters
+final_svm_model = SVC(**best_params)
+final_pipeline = Pipeline([
+    ('tfidf', tfidf),
+    ('classifier', final_svm_model)
+])
+final_pipeline.fit(X_train, y_train)
+
+# Save the final SVM model
+pickle.dump(final_pipeline, open('svm_model.pkl', 'wb'))
