@@ -63,15 +63,17 @@ st.title("Email/SMS Spam Classifier")
 input_sms = st.text_area("Enter the message")
 
 if st.button('Predict'):
-    # Fit the vectorizer with a placeholder message
-    tfidf.fit(['example message'])
+    # Fit the vectorizer with placeholder messages
+    tfidf.fit(['example message 1', 'example message 2'])
 
     # Transform the input message using the fitted vectorizer
     input_sms_transformed = tfidf.transform([input_sms])
 
-    # Fit the SVM on some data (you should use your training data)
-    # Here, we use a placeholder DataFrame for demonstration purposes
-    placeholder_data = pd.DataFrame({'message': ['example message'], 'label': [0]})
+    # Fit the SVM model on the placeholder dataset
+    placeholder_data = pd.DataFrame({
+        'message': ['example message 1', 'example message 2'],
+        'label': [0, 1]
+    })
 
     # Use Leave-One-Out cross-validation for training
     loo = LeaveOneOut()
