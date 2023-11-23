@@ -53,7 +53,6 @@ st.title("Email/SMS Spam Classifier")
 
 # Use st.file_uploader to upload a dataset
 uploaded_file = st.file_uploader("Upload a dataset in CSV format", type=["csv"])
-st.write("Columns in the DataFrame:", df.columns)
 if uploaded_file is not None:
     # Read the uploaded dataset
     df = pd.read_csv(uploaded_file)
