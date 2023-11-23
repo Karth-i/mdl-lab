@@ -52,20 +52,13 @@ st.title("Email/SMS Spam Classifier")
 
 input_sms = st.text_area("Enter the message")
 
+# Initialize counts
+spam_count = 0
+not_spam_count = 0
+
 if st.button('Predict'):
     # Use the ML pipeline to preprocess, vectorize, and predict
     result = pipeline.predict([input_sms])[0]
 
     # Display the result
     if result == 1:
-        st.header("Spam")
-    else:
-        st.header("Not Spam")
-
-    # Bar chart
-    fig, ax = plt.subplots()
-    ax.bar(['Not Spam', 'Spam'], [1 - result, result], color=['blue', 'red'])
-    ax.set_ylabel('Count')
-    ax.set_title('Distribution of Predictions')
-
-    st.pyplot(fig)
