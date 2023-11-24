@@ -53,6 +53,7 @@ if st.button("Predict"):
 
 # Display the model performance on the test set
 st.subheader("Model Performance on Test Set")
-features_test = model.named_steps['vect'].transform(x_test)
+# Access the feature transformation step directly from the best_estimator_
+features_test = model.best_estimator_['vect'].transform(x_test)
 accuracy = model.score(x_test, y_test)
 st.write("Accuracy:", accuracy)
