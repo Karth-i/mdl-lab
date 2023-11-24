@@ -6,7 +6,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
 
 # Load the data
-data_frame = pd.read_csv("spam.csv")
+data_frame = pd.read_csv("spam1.csv")
 x = data_frame['EmailText']
 y = data_frame['Label']
 
