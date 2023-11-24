@@ -49,7 +49,7 @@ pipeline = Pipeline([
     ('classifier', model)
 ])
 
-st.title("Email/SMS Spam Classifier")
+st.title("Spam Classifier")
 
 # Use st.file_uploader to upload a dataset
 uploaded_file = st.file_uploader("Upload a dataset in CSV format", type=["csv"])
