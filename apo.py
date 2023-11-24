@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
@@ -33,6 +34,10 @@ model = GridSearchCV(text_clf, tuned_parameters)
 # Train the model
 model.fit(x_train, y_train)
 
+# Initialize session state
+if 'count_data' not in st.session_state:
+    st.session_state.count_data = {'spam': 0, 'not_spam': 0}
+
 # Streamlit UI
 st.title("Spam Detection App")
 
@@ -47,6 +52,12 @@ if st.button("Predict"):
     # Display the prediction result
     st.write("Prediction:", prediction[0])
 
+    # Update the count_data based on the prediction
+    if prediction[0] == 'spam':
+        st.session_state.count_data['spam'] += 1
+    else:
+        st.session_state.count_data['not_spam'] += 1
+
     # Display the probability of spam
     probability = model.decision_function([user_input])
     st.write("Probability of Spam:", probability[0])
@@ -57,3 +68,11 @@ st.subheader("Model Performance on Test Set")
 features_test = model.best_estimator_['vect'].transform(x_test)
 accuracy = model.score(x_test, y_test)
 st.write("Accuracy:", accuracy)
+
+# Display the bar chart showing the distribution of spam and not spam
+st.subheader("Distribution of Spam and Not Spam")
+fig, ax = plt.subplots()
+ax.bar(st.session_state.count_data.keys(), st.session_state.count_data.values())
+ax.set_ylabel('Count')
+ax.set_title('Distribution of Spam and Not Spam')
+st.pyplot(fig)
