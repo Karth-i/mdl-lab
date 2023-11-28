@@ -42,7 +42,7 @@ if 'count_data' not in st.session_state:
 st.title("Spam Detection App")
 
 # Input text box for user to enter email text
-user_input = st.text_area("Enter Email Text:", "")
+user_input = st.text_area("Enter Text:", "")
 
 # Make predictions when the user clicks the "Predict" button
 if st.button("Predict"):
